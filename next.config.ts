@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   output: 'export',
   basePath: '/helm', // IMPORTANT for GitHub Pages
   assetPrefix: '/helm/',
+  trailingSlash: true,
 };
 
 export default nextConfig;
