@@ -49,3 +49,11 @@ export async function updateSprintStatus(id: string, status: Sprint['status']): 
   const db = await getDB()
   await db.execute('UPDATE sprints SET status = $1 WHERE id = $2', [status, id])
 }
+
+export async function updateSprintDates(id: string, start_date: string, end_date: string): Promise<void> {
+  const db = await getDB()
+  await db.execute(
+    'UPDATE sprints SET start_date = $1, end_date = $2 WHERE id = $3',
+    [start_date, end_date, id]
+  )
+}
