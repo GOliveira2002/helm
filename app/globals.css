@@ -10,42 +10,78 @@
 
 :root {
   /* Light theme */
-  --bg-base:        #f4f3f0;
-  --bg-surface:     #ffffff;
-  --bg-raised:      #eeecea;
-  --bg-overlay:     #e8e6e3;
+  --bg-base: #f4f3f0;
+  --bg-surface: #ffffff;
+  --bg-raised: #eeecea;
+  --bg-overlay: #e8e6e3;
 
-  --border:         #dddbd7;
-  --border-strong:  #c8c5c0;
+  --border: #dddbd7;
+  --border-strong: #c8c5c0;
 
-  --text-primary:   #1a1917;
+  --text-primary: #1a1917;
   --text-secondary: #6b6760;
-  --text-muted:     #a09d98;
+  --text-muted: #a09d98;
 
-  --accent:         #e8622a;
-  --accent-hover:   #d4541e;
-  --accent-subtle:  #fdf0eb;
+  --accent: #e8622a;
+  --accent-hover: #d4541e;
+  --accent-subtle: #fdf0eb;
 
-  --sidebar-width:  240px;
-  --topbar-height:  52px;
+  --prio-low: #2a9d8f;
+  --prio-medium: #c49b0a;
+  --prio-high: #c45a30;
+  --prio-critical: #9b2226;
+
+  --prio-low-bg: #e6f5f4;
+  --prio-medium-bg: #fdf6e0;
+  --prio-high-bg: #fdf0eb;
+  --prio-critical-bg: #fce8e8;
+
+  --sprint-status-completed: #2a9d8f;
+  --sprint-status-active: #c49b0a;
+  --sprint-status-planned: #9b2226;
+
+  --sprint-status-completed-bg: #e6f5f4;
+  --sprint-status-active-bg: #fdf6e0;
+  --sprint-status-planned-bg: #fce8e8;
+
+  --sidebar-width: 240px;
+  --topbar-height: 52px;
 }
 
 [data-theme='dark'] {
-  --bg-base:        #141312;
-  --bg-surface:     #1c1b19;
-  --bg-raised:      #242220;
-  --bg-overlay:     #2c2a28;
+  --bg-base: #141312;
+  --bg-surface: #1c1b19;
+  --bg-raised: #242220;
+  --bg-overlay: #2c2a28;
 
-  --border:         #2e2c2a;
-  --border-strong:  #3d3b38;
+  --border: #2e2c2a;
+  --border-strong: #3d3b38;
 
-  --text-primary:   #f0ede8;
+  --text-primary: #f0ede8;
   --text-secondary: #8c8880;
-  --text-muted:     #5a5752;
+  --text-muted: #5a5752;
 
-  --accent:         #e8622a;
-  --accent-hover:   #f07040;
-  --accent-subtle:  #2a1a12;
+  --prio-low: #2a9d8f;
+  --prio-medium: #e9c46a;
+  --prio-high: #e76f51;
+  --prio-critical: #9b2226;
+
+  --prio-low-bg: #2a9d8f33;
+  --prio-medium-bg: #e9c46a33;
+  --prio-high-bg: #e76f5133;
+  --prio-critical-bg: #9b222633;
+
+  --sprint-status-completed: #2a9d8f;
+  --sprint-status-active: #e9c46a;
+  --sprint-status-planned: #9b2226;
+
+  --sprint-status-completed-bg: #2a9d8f33;
+  --sprint-status-active-bg: #e9c46a33;
+  --sprint-status-planned-bg: #9b222633;
+
+  --accent: #e8622a;
+  --accent-hover: #f07040;
+  --accent-subtle: #2a1a12;
 }
 
 /* ─────────────────────────────────────────
@@ -74,13 +110,28 @@ body {
    Scrollbar
 ───────────────────────────────────────── */
 
-::-webkit-scrollbar        { width: 6px; height: 6px; }
-::-webkit-scrollbar-track  { background: transparent; }
-::-webkit-scrollbar-thumb  { background: var(--border-strong); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
 
 /* ─────────────────────────────────────────
    Utilities
 ───────────────────────────────────────── */
 
-.font-mono { font-family: 'DM Mono', monospace; }
+.font-mono {
+  font-family: 'DM Mono', monospace;
+}

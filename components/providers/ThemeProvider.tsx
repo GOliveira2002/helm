@@ -15,19 +15,14 @@ function getStoredTheme(): Theme {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    // only runs on client, safely lazy
-    return getStoredTheme()
-  })
+  const [theme, setTheme] = useState<Theme>(getStoredTheme)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
     localStorage.setItem('helm:theme', theme)
   }, [theme])
 
-  const toggle = () => {
-    setTheme(prev => (prev === 'light' ? 'dark' : 'light'))
-  }
+  const toggle = () => setTheme(prev => prev === 'light' ? 'dark' : 'light')
 
   return (
     <ThemeContext.Provider value={{ theme, toggle }}>

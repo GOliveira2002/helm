@@ -5,7 +5,6 @@ let initPromise: Promise<Database> | null = null
 
 export async function getDB(): Promise<Database> {
   if (db) return db
-
   if (initPromise) return initPromise
 
   initPromise = Database.load('sqlite:helm.db').then(async (database) => {
@@ -14,6 +13,13 @@ export async function getDB(): Promise<Database> {
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
         color TEXT DEFAULT '#6366f1',
+        created_at TEXT DEFAULT (datetime('now'))
+      );
+
+      CREATE TABLE IF NOT EXISTS members (
+        id TEXT PRIMARY KEY,
+        project_id TEXT REFERENCES projects(id) ON DELETE CASCADE,
+        name TEXT NOT NULL,
         created_at TEXT DEFAULT (datetime('now'))
       );
 
@@ -33,11 +39,51 @@ export async function getDB(): Promise<Database> {
         title TEXT NOT NULL,
         description TEXT DEFAULT '',
         status TEXT DEFAULT 'todo',
+        priority TEXT DEFAULT 'medium',
+        assignee_id TEXT REFERENCES members(id) ON DELETE SET NULL,
+        due_date TEXT DEFAULT NULL,
         story_points INTEGER DEFAULT 0,
         position INTEGER DEFAULT 0,
         created_at TEXT DEFAULT (datetime('now'))
       );
     `)
+
+    // Migrations — adiciona colunas se a DB já existia
+    const taskColumns = await database.select<{ name: string }[]>(
+      `PRAGMA table_info(tasks)`
+    )
+    const colNames = taskColumns.map(c => c.name)
+
+    if (!colNames.includes('priority')) {
+      await database.execute(`ALTER TABLE tasks ADD COLUMN priority TEXT DEFAULT 'medium'`)
+    }
+    if (!colNames.includes('assignee_id')) {
+      await database.execute(`ALTER TABLE tasks ADD COLUMN assignee_id TEXT`)
+    }
+    if (!colNames.includes('due_date')) {
+      await database.execute(`ALTER TABLE tasks ADD COLUMN due_date TEXT`)
+    }
+    if (!colNames.includes('notes')) {
+      await database.execute(`ALTER TABLE tasks ADD COLUMN notes TEXT DEFAULT ''`)
+    }
+    if (!colNames.includes('completed_at')) {
+      await database.execute(`ALTER TABLE tasks ADD COLUMN completed_at TEXT DEFAULT NULL`)
+    }
+    if (!colNames.includes('start_date')) {
+      await database.execute(`ALTER TABLE tasks ADD COLUMN start_date TEXT DEFAULT NULL`)
+    }
+    const tableList = await database.select<{ name: string }[]>(
+      `SELECT name FROM sqlite_master WHERE type='table' AND name='members'`
+    )
+    if (tableList.length === 0) {
+      await database.execute(`CREATE TABLE members (
+    id TEXT PRIMARY KEY,
+    project_id TEXT REFERENCES projects(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    created_at TEXT DEFAULT (datetime('now'))
+  )`)
+    }
+
     db = database
     return database
   })

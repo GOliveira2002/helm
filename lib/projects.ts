@@ -1,5 +1,4 @@
 import { getDB } from './db'
-import { randomUUID } from 'crypto'
 
 export interface Project {
   id: string
@@ -10,7 +9,8 @@ export interface Project {
 
 export async function getProjects(): Promise<Project[]> {
   const db = await getDB()
-  return db.select('SELECT * FROM projects ORDER BY created_at DESC')
+  const results = await db.select<Project[]>('SELECT * FROM projects ORDER BY created_at DESC')
+  return results.map(p => ({ ...p, color: p.color ?? '#6366f1' }))
 }
 
 export async function createProject(name: string, color = '#6366f1'): Promise<Project> {
