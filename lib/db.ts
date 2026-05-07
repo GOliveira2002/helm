@@ -46,6 +46,17 @@ export async function getDB(): Promise<Database> {
         position INTEGER DEFAULT 0,
         created_at TEXT DEFAULT (datetime('now'))
       );
+
+      CREATE TABLE IF NOT EXISTS requirements (
+        id TEXT PRIMARY KEY,
+        project_id TEXT REFERENCES projects(id) ON DELETE CASCADE,
+        sprint_id TEXT REFERENCES sprints(id) ON DELETE SET NULL,
+        name TEXT NOT NULL,
+        hours INTEGER DEFAULT 0,
+        moscow TEXT DEFAULT 'could',
+        created_at TEXT DEFAULT (datetime('now')),
+        converted_to_task BOOLEAN DEFAULT false
+      )
     `)
 
     // Migrations — adiciona colunas se a DB já existia
@@ -89,4 +100,9 @@ export async function getDB(): Promise<Database> {
   })
 
   return initPromise
+}
+
+export function resetDBCache() {
+  db = null
+  initPromise = null
 }

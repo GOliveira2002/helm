@@ -7,9 +7,9 @@ import { getTasks, Task } from '@/lib/tasks'
 import { getMembers, Member } from '@/lib/members'
 
 const PRIORITY_STYLES = {
-  low:      { label: 'Low',      color: 'var(--prio-low)',      bg: 'var(--prio-low-bg)' },
-  medium:   { label: 'Medium',   color: 'var(--prio-medium)',   bg: 'var(--prio-medium-bg)' },
-  high:     { label: 'High',     color: 'var(--prio-high)',     bg: 'var(--prio-high-bg)' },
+  low: { label: 'Low', color: 'var(--prio-low)', bg: 'var(--prio-low-bg)' },
+  medium: { label: 'Medium', color: 'var(--prio-medium)', bg: 'var(--prio-medium-bg)' },
+  high: { label: 'High', color: 'var(--prio-high)', bg: 'var(--prio-high-bg)' },
   critical: { label: 'Critical', color: 'var(--prio-critical)', bg: 'var(--prio-critical-bg)' },
 }
 
@@ -53,8 +53,10 @@ export default function DashboardPage() {
           getSprints(project.id),
           getMembers(project.id),
         ])
-        const activeSprint = sprints.find(s => s.status === 'active') ?? sprints[0]
-        const tasks = activeSprint ? await getTasks(activeSprint.id) : []
+        const activeSprints = sprints.filter(s => s.status === 'active')
+        const sprintsToLoad = activeSprints.length > 0 ? activeSprints : sprints.slice(0, 1)
+        const taskArrays = await Promise.all(sprintsToLoad.map(s => getTasks(s.id)))
+        const tasks = taskArrays.flat()
         return { project, sprints, tasks, members }
       }))
       setData(all)
@@ -98,7 +100,10 @@ export default function DashboardPage() {
       {/* Per project */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {data.map(({ project, sprints, tasks, members }) => {
-          const activeSprint = sprints.find(s => s.status === 'active') ?? sprints[0]
+          const activeSprints = sprints.filter(s => s.status === 'active')
+          const sprintLabel = activeSprints.length > 0
+            ? activeSprints.map(s => s.name).join(', ')
+            : sprints[0]?.name ?? '—'
           const done = tasks.filter(t => t.status === 'done').length
           const inProgress = tasks.filter(t => t.status === 'in-progress').length
           const todo = tasks.filter(t => t.status === 'todo').length
@@ -121,11 +126,11 @@ export default function DashboardPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: project.color, flexShrink: 0 }} />
                   <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-primary)' }}>{project.name}</span>
-                  {activeSprint && (
+                  {sprintLabel && (
                     <span style={{
                       fontSize: '11px', padding: '2px 8px', borderRadius: '999px',
                       background: 'var(--bg-raised)', color: 'var(--text-muted)',
-                    }}>{activeSprint.name}</span>
+                    }}>{sprintLabel}</span>
                   )}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

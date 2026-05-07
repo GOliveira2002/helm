@@ -3,6 +3,7 @@ import './globals.css'
 import { ThemeProvider } from '../components/providers/ThemeProvider'
 import { Sidebar } from '../components/layout/Sidebar'
 import { Topbar } from '../components/layout/Topbar'
+import { DevReset } from '../components/layout/DevReset'
 
 export const metadata: Metadata = {
   title: 'HELM — PM Command Center',
@@ -14,6 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body>
         <ThemeProvider>
+          <DevReset />
           <div style={{ display: 'flex', minHeight: '100vh' }}>
 
             {/* Sidebar */}

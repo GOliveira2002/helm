@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { getProjects, Project } from '@/lib/projects'
-import { getSprints, Sprint } from '@/lib/sprints'
+import { getSprints, updateSprintDates } from '@/lib/sprints'
 import { getTasks, updateTask, Task } from '@/lib/tasks'
 
-const ROW_HEIGHT = 36
+const ROW_HEIGHT = 50
 const HEADER_HEIGHT = 48
 const LABEL_WIDTH = 220
 const MIN_BAR_WIDTH = 20
@@ -109,8 +109,8 @@ export default function GanttPage() {
 
         const base = minDate ?? new Date()
         const baseEnd = maxDate ?? new Date(base.getTime() + 30 * 86400000)
-        const gStart = new Date(base); gStart.setDate(gStart.getDate() - 2)
-        const gEnd = new Date(baseEnd); gEnd.setDate(gEnd.getDate() + 4)
+        const gStart = new Date(base); gStart.setDate(gStart.getDate() - 4)
+        const gEnd = new Date(baseEnd); gEnd.setDate(gEnd.getDate() + 365)
         setGanttStart(gStart)
         setGanttEnd(gEnd)
         setRows(allRows)
@@ -194,8 +194,9 @@ export default function GanttPage() {
                 start_date: toISO(row.start),
                 due_date: toISO(row.end),
             })
+        } else if (row.type === 'sprint') {
+            await updateSprintDates(row.id, toISO(row.start), toISO(row.end))
         }
-        // Sprint date updates could go here if needed
     }
 
     useEffect(() => {
@@ -241,10 +242,58 @@ export default function GanttPage() {
                         </button>
                     ))}
                 </div>
+                {/* Date range controls */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '10px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>From</label>
+                        <input
+                            type="date"
+                            value={toISO(ganttStart)}
+                            onChange={e => setGanttStart(new Date(e.target.value))}
+                            style={{
+                                background: 'var(--bg-raised)', border: '1px solid var(--border)',
+                                borderRadius: '6px', padding: '4px 8px', fontSize: '12px',
+                                color: 'var(--text-primary)', fontFamily: 'inherit', outline: 'none',
+                                colorScheme: 'dark',
+                            }}
+                        />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>To</label>
+                        <input
+                            type="date"
+                            value={toISO(ganttEnd)}
+                            onChange={e => setGanttEnd((new Date(e.target.value)))}
+                            style={{
+                                background: 'var(--bg-raised)', border: '1px solid var(--border)',
+                                borderRadius: '6px', padding: '4px 8px', fontSize: '12px',
+                                color: 'var(--text-primary)', fontFamily: 'inherit', outline: 'none',
+                                colorScheme: 'dark',
+                            }}
+                        />
+                    </div>
+                    <button
+                        onClick={() => loadData(selectedProject)}
+                        style={{
+                            background: 'transparent', border: '1px solid var(--border)',
+                            borderRadius: '6px', padding: '4px 12px', fontSize: '12px',
+                            color: 'var(--text-muted)', cursor: 'pointer', fontFamily: 'inherit',
+                        }}
+                    >Reset</button>
+                </div>
             </div>
 
             {/* Gantt */}
-            <div style={{ flex: 1, overflow: 'auto', border: '1px solid var(--border)', borderRadius: '12px' }} ref={containerRef}>
+            <div
+                ref={containerRef}
+                style={{
+                    flex: 1,
+                    overflow: 'auto',
+                    border: '1px solid var(--border)',
+                    borderRadius: '12px',
+                    minHeight: 0,
+                }}
+            >
                 <div style={{ display: 'flex', minWidth: LABEL_WIDTH + totalWidth }}>
 
                     {/* Label column */}
@@ -347,7 +396,7 @@ export default function GanttPage() {
                                                 left: barStart,
                                                 top: isSprint ? 8 : 10,
                                                 width: barWidth,
-                                                height: isSprint ? 20 : 16,
+                                                height: isSprint ? 30 : 26,
                                                 background: row.color,
                                                 borderRadius: isSprint ? '4px' : '3px',
                                                 opacity: isSprint ? 0.9 : 0.85,
@@ -379,11 +428,32 @@ export default function GanttPage() {
                                     )}
 
                                     {/* No dates placeholder */}
-                                    {(barStart === null || barWidth === 0) && (
-                                        <div style={{
-                                            position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)',
-                                            fontSize: '10px', color: 'var(--text-muted)', fontStyle: 'italic',
-                                        }}>no dates</div>
+                                    {(barStart === null || barWidth === 0) && row.type === 'task' && (
+                                        <div
+                                            onClick={() => {
+                                                const sprint = rows.find(r => r.type === 'sprint' && r.id === row.sprintId)
+                                                const defaultStart = sprint?.start ?? new Date()
+                                                const defaultEnd = new Date(defaultStart)
+                                                defaultEnd.setDate(defaultEnd.getDate() + 3)
+                                                setRows(prev => prev.map(r =>
+                                                    r.id === row.id ? { ...r, start: defaultStart, end: defaultEnd } : r
+                                                ))
+                                                updateTask(row.id, {
+                                                    start_date: toISO(defaultStart),
+                                                    due_date: toISO(defaultEnd),
+                                                })
+                                            }}
+                                            style={{
+                                                position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)',
+                                                fontSize: '10px', color: 'var(--accent)', cursor: 'pointer',
+                                                padding: '2px 8px', border: '1px dashed var(--accent)',
+                                                borderRadius: '4px', opacity: 0.7, transition: 'opacity 0.15s',
+                                            }}
+                                            onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
+                                            onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}
+                                        >
+                                            + set dates
+                                        </div>
                                     )}
                                 </div>
                             )
