@@ -6,10 +6,10 @@ import { getProjects, Project } from '@/lib/projects'
 import { getSprints, Sprint } from '@/lib/sprints'
 
 const MOSCOW_STYLES: Record<Moscow, { label: string; color: string; bg: string }> = {
-    must: { label: 'Must', color: '#ef4444', bg: '#2e0a0a' },
-    should: { label: 'Should', color: '#f59e0b', bg: '#2e1f00' },
-    could: { label: 'Could', color: '#0ea5e9', bg: '#0a2233' },
-    wont: { label: "Won't", color: '#5a5752', bg: 'var(--bg-overlay)' },
+    must: { label: 'Must', color: 'var(--moscow-must-have)', bg: 'var(--moscow-must-have-bg)' },
+    should: { label: 'Should', color: 'var(--moscow-should-have)', bg: 'var(--moscow-should-have-bg)' },
+    could: { label: 'Could', color: 'var(--moscow-could-have)', bg: 'var(--moscow-could-have-bg)' },
+    wont: { label: "Won't", color: 'var(--moscow-won-t-have)', bg: 'var(--moscow-won-t-have-bg)' },
 }
 
 export default function RequirementsPage() {

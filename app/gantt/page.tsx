@@ -110,7 +110,7 @@ export default function GanttPage() {
         const base = minDate ?? new Date()
         const baseEnd = maxDate ?? new Date(base.getTime() + 30 * 86400000)
         const gStart = new Date(base); gStart.setDate(gStart.getDate() - 4)
-        const gEnd = new Date(baseEnd); gEnd.setDate(gEnd.getDate() + 365)
+        const gEnd = new Date(baseEnd); gEnd.setDate(gEnd.getDate() + 90)
         setGanttStart(gStart)
         setGanttEnd(gEnd)
         setRows(allRows)

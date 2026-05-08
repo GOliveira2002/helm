@@ -6,17 +6,21 @@ export function DevReset() {
     if (process.env.NEXT_PUBLIC_DEV_MODE !== 'true') return null
 
     async function handleReset() {
-        if (!confirm('Delete all data and recreate tables?')) return
-        const db = await getDB()
-
-        // Drop all tables
-        await db.execute('DROP TABLE IF EXISTS requirements')
-        await db.execute('DROP TABLE IF EXISTS tasks')
-        await db.execute('DROP TABLE IF EXISTS sprints')
-        await db.execute('DROP TABLE IF EXISTS members')
-        await db.execute('DROP TABLE IF EXISTS projects')
-
-        resetDBCache()
+        console.warn('Resetting database...')
+        try {
+            const db = await getDB()
+            await db.execute('PRAGMA foreign_keys = OFF')
+            await db.execute('DROP TABLE IF EXISTS requirements')
+            await db.execute('DROP TABLE IF EXISTS tasks')
+            await db.execute('DROP TABLE IF EXISTS members')
+            await db.execute('DROP TABLE IF EXISTS sprints')
+            await db.execute('DROP TABLE IF EXISTS projects')
+            await db.execute('PRAGMA foreign_keys = ON')
+            resetDBCache()
+        } catch (e) {
+            console.error('Reset error:', e)
+            alert(String(e))
+        }
         window.location.reload()
     }
 

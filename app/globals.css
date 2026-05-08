@@ -44,6 +44,16 @@
   --sprint-status-active-bg: #fdf6e0;
   --sprint-status-planned-bg: #fce8e8;
 
+  --moscow-must-have: #2a9d8f;
+  --moscow-should-have: #c49b0a;
+  --moscow-could-have: #c45a30;
+  --moscow-won-t-have: #9b2226;
+
+  --moscow-must-have-bg: #e6f5f4;
+  --moscow-should-have-bg: #fdf6e0;
+  --moscow-could-have-bg: #fdf0eb;
+  --moscow-won-t-have-bg: #fce8e8;
+
   --sidebar-width: 240px;
   --topbar-height: 52px;
 }
@@ -78,6 +88,16 @@
   --sprint-status-completed-bg: #2a9d8f33;
   --sprint-status-active-bg: #e9c46a33;
   --sprint-status-planned-bg: #9b222633;
+
+  --moscow-must-have: #2a9d8f;
+  --moscow-should-have: #e9c46a;
+  --moscow-could-have: #e76f51;
+  --moscow-won-t-have: #9b2226;
+
+  --moscow-must-have-bg: #2a9d8f33;
+  --moscow-should-have-bg: #e9c46a33;
+  --moscow-could-have-bg: #e76f5133;
+  --moscow-won-t-have-bg: #9b222633;
 
   --accent: #e8622a;
   --accent-hover: #f07040;

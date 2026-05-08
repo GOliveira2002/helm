@@ -242,8 +242,8 @@ function TaskCard({ task, members, onSelect, isSelected }: {
                 {task.due_date && (
                     <span style={{
                         fontSize: '10px', fontWeight: 500, padding: '2px 7px', borderRadius: '4px',
-                        color: overdue ? '#ef4444' : 'var(--text-muted)',
-                        background: overdue ? '#2e0a0a' : 'var(--bg-raised)',
+                        color: overdue ? 'var(--moscow-won-t-have)' : 'var(--text-muted)',
+                        background: overdue ? 'var(--moscow-won-t-have-bg)' : 'var(--bg-raised)',
                     }}>
                         {overdue ? '⚠ ' : ''}{new Date(task.due_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
                     </span>
