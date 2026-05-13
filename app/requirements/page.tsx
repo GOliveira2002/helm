@@ -100,7 +100,7 @@ export default function RequirementsPage() {
     )
 
     return (
-        <div style={{ padding: '2rem 2.5rem', maxWidth: '1000px' }}>
+        <div style={{ padding: '2rem 2.5rem'}}>
 
             {/* Header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>

@@ -4,6 +4,7 @@ export interface Sprint {
   id: string
   project_id: string
   name: string
+  description: string
   start_date: string
   end_date: string
   status: 'active' | 'completed' | 'planned'
@@ -21,6 +22,7 @@ export async function getSprints(project_id: string): Promise<Sprint[]> {
 export async function createSprint(
   project_id: string,
   name: string,
+  description: string,
   start_date: string,
   end_date: string
 ): Promise<Sprint> {
@@ -34,10 +36,10 @@ export async function createSprint(
 
   const id = crypto.randomUUID()
   await db.execute(
-    'INSERT INTO sprints (id, project_id, name, start_date, end_date) VALUES ($1, $2, $3, $4, $5)',
-    [id, project_id, name, start_date, end_date]
+    'INSERT INTO sprints (id, project_id, name, description, start_date, end_date) VALUES ($1, $2, $3, $4, $5, $6)',
+    [id, project_id, name, description, start_date, end_date]
   )
-  return { id, project_id, name, start_date, end_date, status: 'active', created_at: new Date().toISOString() }
+  return { id, project_id, name, description, start_date, end_date, status: 'active', created_at: new Date().toISOString() }
 }
 
 export async function deleteSprint(id: string): Promise<void> {

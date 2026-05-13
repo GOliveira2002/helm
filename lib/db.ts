@@ -8,7 +8,24 @@ export async function getDB(): Promise<Database> {
   if (initPromise) return initPromise
 
   initPromise = Database.load('sqlite:helm.db').then(async (database) => {
+
+    // ─── Schema ───────────────────────────────────────────────────────────────
+
     await database.execute(`
+      CREATE TABLE IF NOT EXISTS roles (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL UNIQUE,
+        created_at TEXT DEFAULT (datetime('now'))
+      );
+
+      CREATE TABLE IF NOT EXISTS members (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        email TEXT DEFAULT NULL,
+        role_id TEXT REFERENCES roles(id) ON DELETE SET NULL,
+        created_at TEXT DEFAULT (datetime('now'))
+      );
+
       CREATE TABLE IF NOT EXISTS projects (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
@@ -16,20 +33,21 @@ export async function getDB(): Promise<Database> {
         created_at TEXT DEFAULT (datetime('now'))
       );
 
-      CREATE TABLE IF NOT EXISTS members (
+      CREATE TABLE IF NOT EXISTS project_members (
         id TEXT PRIMARY KEY,
         project_id TEXT REFERENCES projects(id) ON DELETE CASCADE,
-        name TEXT NOT NULL,
-        created_at TEXT DEFAULT (datetime('now'))
+        member_id TEXT REFERENCES members(id) ON DELETE CASCADE,
+        UNIQUE(project_id, member_id)
       );
 
       CREATE TABLE IF NOT EXISTS sprints (
         id TEXT PRIMARY KEY,
         project_id TEXT REFERENCES projects(id) ON DELETE CASCADE,
         name TEXT NOT NULL,
+        description TEXT DEFAULT '',
         start_date TEXT,
         end_date TEXT,
-        status TEXT DEFAULT 'active',
+        status TEXT DEFAULT 'planned',
         created_at TEXT DEFAULT (datetime('now'))
       );
 
@@ -38,10 +56,13 @@ export async function getDB(): Promise<Database> {
         sprint_id TEXT REFERENCES sprints(id) ON DELETE CASCADE,
         title TEXT NOT NULL,
         description TEXT DEFAULT '',
+        notes TEXT DEFAULT '',
         status TEXT DEFAULT 'todo',
         priority TEXT DEFAULT 'medium',
         assignee_id TEXT REFERENCES members(id) ON DELETE SET NULL,
+        start_date TEXT DEFAULT NULL,
         due_date TEXT DEFAULT NULL,
+        completed_at TEXT DEFAULT NULL,
         story_points INTEGER DEFAULT 0,
         position INTEGER DEFAULT 0,
         created_at TEXT DEFAULT (datetime('now'))
@@ -54,45 +75,44 @@ export async function getDB(): Promise<Database> {
         name TEXT NOT NULL,
         hours INTEGER DEFAULT 0,
         moscow TEXT DEFAULT 'could',
-        created_at TEXT DEFAULT (datetime('now')),
-        converted_to_task BOOLEAN DEFAULT false
-      )
+        converted INTEGER DEFAULT 0,
+        created_at TEXT DEFAULT (datetime('now'))
+      );
+
+      CREATE TABLE IF NOT EXISTS daily_scrums (
+        id TEXT PRIMARY KEY,
+        project_id TEXT REFERENCES projects(id) ON DELETE CASCADE,
+        sprint_id TEXT REFERENCES sprints(id) ON DELETE SET NULL,
+        title TEXT NOT NULL,
+        scheduled_at TEXT NOT NULL,
+        duration_minutes INTEGER DEFAULT 30,
+        location TEXT DEFAULT NULL,
+        content TEXT DEFAULT '',
+        status TEXT DEFAULT 'scheduled',
+        created_at TEXT DEFAULT (datetime('now'))
+      );
+
+      CREATE TABLE IF NOT EXISTS daily_scrum_members (
+        id TEXT PRIMARY KEY,
+        daily_scrum_id TEXT REFERENCES daily_scrums(id) ON DELETE CASCADE,
+        member_id TEXT REFERENCES members(id) ON DELETE CASCADE,
+        email TEXT NOT NULL
+      );
     `)
 
-    // Migrations — adiciona colunas se a DB já existia
-    const taskColumns = await database.select<{ name: string }[]>(
-      `PRAGMA table_info(tasks)`
-    )
-    const colNames = taskColumns.map(c => c.name)
+    // ─── Seed: default roles ──────────────────────────────────────────────────
 
-    if (!colNames.includes('priority')) {
-      await database.execute(`ALTER TABLE tasks ADD COLUMN priority TEXT DEFAULT 'medium'`)
-    }
-    if (!colNames.includes('assignee_id')) {
-      await database.execute(`ALTER TABLE tasks ADD COLUMN assignee_id TEXT`)
-    }
-    if (!colNames.includes('due_date')) {
-      await database.execute(`ALTER TABLE tasks ADD COLUMN due_date TEXT`)
-    }
-    if (!colNames.includes('notes')) {
-      await database.execute(`ALTER TABLE tasks ADD COLUMN notes TEXT DEFAULT ''`)
-    }
-    if (!colNames.includes('completed_at')) {
-      await database.execute(`ALTER TABLE tasks ADD COLUMN completed_at TEXT DEFAULT NULL`)
-    }
-    if (!colNames.includes('start_date')) {
-      await database.execute(`ALTER TABLE tasks ADD COLUMN start_date TEXT DEFAULT NULL`)
-    }
-    const tableList = await database.select<{ name: string }[]>(
-      `SELECT name FROM sqlite_master WHERE type='table' AND name='members'`
+    const rolesCount = await database.select<{ count: number }[]>(
+      `SELECT COUNT(*) as count FROM roles`
     )
-    if (tableList.length === 0) {
-      await database.execute(`CREATE TABLE members (
-    id TEXT PRIMARY KEY,
-    project_id TEXT REFERENCES projects(id) ON DELETE CASCADE,
-    name TEXT NOT NULL,
-    created_at TEXT DEFAULT (datetime('now'))
-  )`)
+    if (rolesCount[0]?.count === 0) {
+      await database.execute(`
+        INSERT INTO roles (id, name) VALUES
+          ('${crypto.randomUUID()}', 'Scrum Master'),
+          ('${crypto.randomUUID()}', 'Product Owner'),
+          ('${crypto.randomUUID()}', 'Developer'),
+          ('${crypto.randomUUID()}', 'Viewer')
+      `)
     }
 
     db = database

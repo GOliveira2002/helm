@@ -123,7 +123,7 @@ export default function AnalyticsPage() {
   const lastVelocity = velocity[velocity.length - 1]?.completed_points ?? 0
 
   return (
-    <div style={{ padding: '2rem 2.5rem', maxWidth: '1000px' }}>
+    <div style={{ padding: '2rem 2.5rem' }}>
 
       {/* Header */}
       <div style={{ marginBottom: '1.5rem' }}>

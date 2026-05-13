@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,102 +6,124 @@
 
 /* ─────────────────────────────────────────
    HELM — Design Tokens
+   Style: Linear-inspired, cold greys, purple accent
 ───────────────────────────────────────── */
 
 :root {
   /* Light theme */
-  --bg-base: #f4f3f0;
-  --bg-surface: #ffffff;
-  --bg-raised: #eeecea;
-  --bg-overlay: #e8e6e3;
+  --bg-base:        #f7f7f8;
+  --bg-surface:     #ffffff;
+  --bg-raised:      #f0f0f2;
+  --bg-overlay:     #e8e8ec;
 
-  --border: #dddbd7;
-  --border-strong: #c8c5c0;
+  --border:         #e2e2e6;
+  --border-strong:  #c8c8d0;
 
-  --text-primary: #1a1917;
-  --text-secondary: #6b6760;
-  --text-muted: #a09d98;
+  --text-primary:   #0f0f11;
+  --text-secondary: #5a5a6e;
+  --text-muted:     #9898aa;
 
-  --accent: #e8622a;
-  --accent-hover: #d4541e;
-  --accent-subtle: #fdf0eb;
+  --accent:         #5e4dcd;
+  --accent-hover:   #4e3dbd;
+  --accent-subtle:  #eeecfb;
 
-  --prio-low: #2a9d8f;
-  --prio-medium: #c49b0a;
-  --prio-high: #c45a30;
-  --prio-critical: #9b2226;
+  /* Priority */
+  --prio-low:           #3b82f6;
+  --prio-low-bg:        #eff6ff;
+  --prio-medium:        #f59e0b;
+  --prio-medium-bg:     #fffbeb;
+  --prio-high:          #f97316;
+  --prio-high-bg:       #fff7ed;
+  --prio-critical:      #ef4444;
+  --prio-critical-bg:   #fef2f2;
 
-  --prio-low-bg: #e6f5f4;
-  --prio-medium-bg: #fdf6e0;
-  --prio-high-bg: #fdf0eb;
-  --prio-critical-bg: #fce8e8;
+  /* Sprint status */
+  --sprint-status-planned:       #9898aa;
+  --sprint-status-planned-bg:    #f0f0f2;
+  --sprint-status-active:        #10b981;
+  --sprint-status-active-bg:     #ecfdf5;
+  --sprint-status-completed:     #5e4dcd;
+  --sprint-status-completed-bg:  #eeecfb;
 
-  --sprint-status-completed: #2a9d8f;
-  --sprint-status-active: #c49b0a;
-  --sprint-status-planned: #9b2226;
+  /* MoSCoW */
+  --moscow-must-have:       #ef4444;
+  --moscow-must-have-bg:    #fef2f2;
+  --moscow-should-have:     #f97316;
+  --moscow-should-have-bg:  #fff7ed;
+  --moscow-could-have:      #3b82f6;
+  --moscow-could-have-bg:   #eff6ff;
+  --moscow-won-t-have:      #9898aa;
+  --moscow-won-t-have-bg:   #f0f0f2;
 
-  --sprint-status-completed-bg: #e6f5f4;
-  --sprint-status-active-bg: #fdf6e0;
-  --sprint-status-planned-bg: #fce8e8;
+  /* Roles */
+  --role-scrum-master:      #5e4dcd;
+  --role-scrum-master-bg:   #eeecfb;
+  --role-product-owner:     #c2550a;
+  --role-product-owner-bg:  #fff3eb;
+  --role-developer:         #0a7a52;
+  --role-developer-bg:      #edfaf4;
+  --role-viewer:            #5a5a6e;
+  --role-viewer-bg:         #f0f0f2;
 
-  --moscow-must-have: #2a9d8f;
-  --moscow-should-have: #c49b0a;
-  --moscow-could-have: #c45a30;
-  --moscow-won-t-have: #9b2226;
-
-  --moscow-must-have-bg: #e6f5f4;
-  --moscow-should-have-bg: #fdf6e0;
-  --moscow-could-have-bg: #fdf0eb;
-  --moscow-won-t-have-bg: #fce8e8;
-
-  --sidebar-width: 240px;
-  --topbar-height: 52px;
+  --sidebar-width:   240px;
+  --topbar-height:   52px;
 }
 
 [data-theme='dark'] {
-  --bg-base: #141312;
-  --bg-surface: #1c1b19;
-  --bg-raised: #242220;
-  --bg-overlay: #2c2a28;
+  /* Figma-dark feel — medium dark, cold greys */
+  --bg-base:        #1e1e22;
+  --bg-surface:     #27272d;
+  --bg-raised:      #2e2e35;
+  --bg-overlay:     #35353e;
 
-  --border: #2e2c2a;
-  --border-strong: #3d3b38;
+  --border:         #3a3a44;
+  --border-strong:  #4a4a58;
 
-  --text-primary: #f0ede8;
-  --text-secondary: #8c8880;
-  --text-muted: #5a5752;
+  --text-primary:   #ebebef;
+  --text-secondary: #9898aa;
+  --text-muted:     #5c5c6e;
 
-  --prio-low: #2a9d8f;
-  --prio-medium: #e9c46a;
-  --prio-high: #e76f51;
-  --prio-critical: #9b2226;
+  --accent:         #7c6ee8;
+  --accent-hover:   #8f82ef;
+  --accent-subtle:  #2a2542;
 
-  --prio-low-bg: #2a9d8f33;
-  --prio-medium-bg: #e9c46a33;
-  --prio-high-bg: #e76f5133;
-  --prio-critical-bg: #9b222633;
+  /* Priority */
+  --prio-low:           #60a5fa;
+  --prio-low-bg:        #1e2e45;
+  --prio-medium:        #fbbf24;
+  --prio-medium-bg:     #2e2410;
+  --prio-high:          #fb923c;
+  --prio-high-bg:       #2e1e0e;
+  --prio-critical:      #f87171;
+  --prio-critical-bg:   #2e1414;
 
-  --sprint-status-completed: #2a9d8f;
-  --sprint-status-active: #e9c46a;
-  --sprint-status-planned: #9b2226;
+  /* Sprint status */
+  --sprint-status-planned:       #9898aa;
+  --sprint-status-planned-bg:    #2e2e35;
+  --sprint-status-active:        #34d399;
+  --sprint-status-active-bg:     #0e2e22;
+  --sprint-status-completed:     #7c6ee8;
+  --sprint-status-completed-bg:  #2a2542;
 
-  --sprint-status-completed-bg: #2a9d8f33;
-  --sprint-status-active-bg: #e9c46a33;
-  --sprint-status-planned-bg: #9b222633;
+  /* MoSCoW */
+  --moscow-must-have:       #f87171;
+  --moscow-must-have-bg:    #2e1414;
+  --moscow-should-have:     #fb923c;
+  --moscow-should-have-bg:  #2e1e0e;
+  --moscow-could-have:      #60a5fa;
+  --moscow-could-have-bg:   #1e2e45;
+  --moscow-won-t-have:      #9898aa;
+  --moscow-won-t-have-bg:   #2e2e35;
 
-  --moscow-must-have: #2a9d8f;
-  --moscow-should-have: #e9c46a;
-  --moscow-could-have: #e76f51;
-  --moscow-won-t-have: #9b2226;
-
-  --moscow-must-have-bg: #2a9d8f33;
-  --moscow-should-have-bg: #e9c46a33;
-  --moscow-could-have-bg: #e76f5133;
-  --moscow-won-t-have-bg: #9b222633;
-
-  --accent: #e8622a;
-  --accent-hover: #f07040;
-  --accent-subtle: #2a1a12;
+  /* Roles */
+  --role-scrum-master:      #7c6ee8;
+  --role-scrum-master-bg:   #2a2542;
+  --role-product-owner:     #fb923c;
+  --role-product-owner-bg:  #2e1e0e;
+  --role-developer:         #34d399;
+  --role-developer-bg:      #0e2e22;
+  --role-viewer:            #9898aa;
+  --role-viewer-bg:         #2e2e35;
 }
 
 /* ─────────────────────────────────────────
@@ -115,11 +137,12 @@
 }
 
 html {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 14px;
   background: var(--bg-base);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -130,28 +153,13 @@ body {
    Scrollbar
 ───────────────────────────────────────── */
 
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
-}
+::-webkit-scrollbar        { width: 5px; height: 5px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: var(--border-strong); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
 /* ─────────────────────────────────────────
    Utilities
 ───────────────────────────────────────── */
 
-.font-mono {
-  font-family: 'DM Mono', monospace;
-}
+.font-mono { font-family: 'JetBrains Mono', monospace; }
